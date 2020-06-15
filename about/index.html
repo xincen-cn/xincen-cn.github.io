@@ -17,10 +17,19 @@
   <meta name="description" content="">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
-  <title>标签 - xincen</title>
+  <title>关于我 - xincen</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/blog/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
 
 
 <!-- 主题依赖的图标库，不要自行修改 -->
@@ -42,7 +51,7 @@
 
 
 <body>
-  <header style="height: 80vh;">
+  <header style="height: 60vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand"
@@ -159,8 +168,13 @@
               <div class="col-12 col-md-10 m-auto">
                 
 
-<div class="text-center tagcloud">
-  <a href="/blog/tags/EasyExcel/" style="font-size: 15px; color: #bbe">EasyExcel</a> <a href="/blog/tags/JUC/" style="font-size: 15px; color: #bbe">JUC</a> <a href="/blog/tags/JVM/" style="font-size: 15px; color: #bbe">JVM</a> <a href="/blog/tags/Linux/" style="font-size: 15px; color: #bbe">Linux</a> <a href="/blog/tags/Maven/" style="font-size: 15px; color: #bbe">Maven</a> <a href="/blog/tags/Spring/" style="font-size: 15px; color: #bbe">Spring</a> <a href="/blog/tags/String/" style="font-size: 15px; color: #bbe">String</a> <a href="/blog/tags/cron/" style="font-size: 15px; color: #bbe">cron</a> <a href="/blog/tags/docker/" style="font-size: 15px; color: #bbe">docker</a> <a href="/blog/tags/git/" style="font-size: 15px; color: #bbe">git</a>
+<div class="page-content">
+  <h4 id="个人信息"><a href="#个人信息" class="headerlink" title="个人信息"></a>个人信息</h4><hr>
+<p> 性别：♂，目前大二学生一名。</p>
+<p>很高兴能够在这里见到你，这里是我的个人博客，累计分享和记录一下我的个人技术知识点，和总结点，希望可以对你有所帮助！</p>
+<h4 id="联系我"><a href="#联系我" class="headerlink" title="联系我"></a>联系我</h4><hr>
+<p>如果你想一块交流，欢迎添加微信：<code>xincen110</code>，合意友来情不厌，知心人至话投机。</p>
+
 </div>
 
               </div>
@@ -298,7 +312,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "标签&nbsp;",
+        "关于我&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
@@ -312,6 +326,21 @@
   </script>
 
 
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
 
 
 

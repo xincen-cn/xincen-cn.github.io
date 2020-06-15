@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/blog/img/favicon.png">
+  <link rel="icon" type="image/png" href="/blog/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>EasyExcel - xincen</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/blog/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/blog/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/blog/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/blog/">&nbsp;<strong>xincen</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/">
+                <i class="iconfont icon-home-fill"></i>
+                主页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                总览
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于我
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/blog/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-06-15 11:14">
+      2020年6月15日 上午
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      569 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      8
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <h1 id="EasyExcel"><a href="#EasyExcel" class="headerlink" title="EasyExcel"></a>EasyExcel</h1><blockquote>
+<p>应用场景</p>
+</blockquote>
+<p>1、数据导入：减轻录入工作量</p>
+<p>2、数据导出：统计信息归档</p>
+<p>3、数据传输：异构系统之间数据传输</p>
+<h2 id="一、写入"><a href="#一、写入" class="headerlink" title="一、写入"></a>一、写入</h2><blockquote>
+<p>1、创建实体类用来读取数据</p>
+</blockquote>
+<p>​    //设置字段名<br>​    @ExcelProperty(“学生编号”)</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Data</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoData</span> </span>&#123;
+    <span class="hljs-comment">//设置字段名</span>
+    <span class="hljs-meta">@ExcelProperty</span>(<span class="hljs-string">"学生编号"</span>)
+    <span class="hljs-keyword">private</span> String sno;
+    <span class="hljs-meta">@ExcelProperty</span>(<span class="hljs-string">"学生姓名"</span>)
+    <span class="hljs-keyword">private</span> String name;
+&#125;</code></pre>
+
+<blockquote>
+<p>2、实例</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-meta">@org</span>.junit.Test
+   <span class="hljs-function"><span class="hljs-keyword">public</span>  <span class="hljs-keyword">void</span> <span class="hljs-title">test</span><span class="hljs-params">()</span></span>&#123;
+       List&lt;DemoData&gt; list  = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+       <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;i&lt;<span class="hljs-number">10</span>;i++)&#123;
+           DemoData d = <span class="hljs-keyword">new</span> DemoData();
+           d.setName(<span class="hljs-string">"lucy"</span>);
+           d.setSno(<span class="hljs-string">""</span>+i);
+           list.add(d);
+       &#125;
+
+       <span class="hljs-comment">//指定写入文件路径</span>
+       String fileName = <span class="hljs-string">"G:/t.xlsx"</span>;
+       EasyExcel.write(fileName, DemoData.class).sheet("学生").doWrite(list);
+   &#125;</code></pre>
+
+<h2 id="二、读取"><a href="#二、读取" class="headerlink" title="二、读取"></a>二、读取</h2><blockquote>
+<p>1、创建实体类用来读取数据</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-meta">@Data</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReadData</span> </span>&#123;
+    <span class="hljs-comment">//设置字段</span>
+    <span class="hljs-meta">@ExcelProperty</span>(value = <span class="hljs-string">"一级标题"</span>,index = <span class="hljs-number">0</span>)
+    <span class="hljs-keyword">private</span> String firstName;
+    <span class="hljs-meta">@ExcelProperty</span>(value = <span class="hljs-string">"二级标题"</span>,index = <span class="hljs-number">1</span>)
+    <span class="hljs-keyword">private</span> String secondName;
+&#125;</code></pre>
+
+<blockquote>
+<p>2、实例操作</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">readFile</span><span class="hljs-params">(MultipartFile file,EduSubjectService eduSubjectService)</span> <span class="hljs-keyword">throws</span> IOException </span>&#123;
+            InputStream inputStream = file.getInputStream();
+            <span class="hljs-comment">//读取文件（使用到监听器） 参数说明：文件流,数据实体类,监听器)</span>
+            EasyExcel.read(inputStream, ReadData<span class="hljs-class">.<span class="hljs-keyword">class</span>,<span class="hljs-title">new</span> <span class="hljs-title">ExcelListener</span>(<span class="hljs-title">eduSubjectService</span>)).<span class="hljs-title">sheet</span>().<span class="hljs-title">doRead</span>()</span>;
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+    &#125;</code></pre>
+
+<blockquote>
+<p>3、配置监听器</p>
+<p>继承— AnalysisEventListener&lt;&gt;类</p>
+</blockquote>
+<pre><code class="hljs java">**
+ * 实现 ExcelListener
+ */
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ExcelListener</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AnalysisEventListener</span>&lt;<span class="hljs-title">ReadData</span>&gt; </span>&#123;
+    <span class="hljs-keyword">private</span> EduSubjectService service;
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     *  获取读取excel内容</span>
+<span class="hljs-comment">     *       :为一行一行读取</span>
+<span class="hljs-comment">     *  readData.getFirstName()//获取第一个字段</span>
+<span class="hljs-comment">     *  readData.getSecondName()//获取第二个字段</span>
+<span class="hljs-comment">     */</span>
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">invoke</span><span class="hljs-params">(ReadData readData, AnalysisContext analysisContext)</span> </span>&#123;
+        System.out.println(<span class="hljs-string">"---&gt;"</span>+readData);
+        EduSubject firstField = exisFirstField(readData.getFirstName());
+        System.out.println(firstField);
+        String id = firstField.getId();
+        <span class="hljs-keyword">if</span>(firstField==<span class="hljs-keyword">null</span>)&#123;<span class="hljs-comment">//如果数据库没有不重复 添加</span>
+            firstField = <span class="hljs-keyword">new</span> EduSubject();
+            firstField.setTitle(readData.getFirstName());
+            firstField.setParentId(<span class="hljs-string">"0"</span>);
+            firstField.setSort(<span class="hljs-number">1</span>);
+            service.save(firstField);
+            System.out.println(<span class="hljs-string">"添加"</span>);
+        &#125;
+        <span class="hljs-comment">//同一转换为小写</span>
+        String secondName = readData.getSecondName().toLowerCase();
+        EduSubject secondField = exisSecondField(secondName,id);
+        System.out.println(secondField);
+        <span class="hljs-keyword">if</span>(secondField == <span class="hljs-keyword">null</span> )&#123;<span class="hljs-comment">//如果数据库没有不重复 添加</span>
+            secondField = <span class="hljs-keyword">new</span> EduSubject();
+            secondField.setTitle(secondName);
+            secondField.setParentId(firstField.getId());
+            secondField.setSort(<span class="hljs-number">1</span>);
+            service.save(secondField);
+        &#125;
+    &#125;
+    <span class="hljs-comment">//读取完成后执行</span>
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">doAfterAllAnalysed</span><span class="hljs-params">(AnalysisContext analysisContext)</span> </span>&#123;
+        System.out.println(<span class="hljs-string">"添加成功"</span>);
+    &#125;
+    <span class="hljs-comment">//判断数据库中是否有一级字段</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> EduSubject <span class="hljs-title">exisFirstField</span><span class="hljs-params">(String name)</span></span>&#123;
+        QueryWrapper&lt;EduSubject&gt; wrapper  = <span class="hljs-keyword">new</span> QueryWrapper&lt;&gt;();
+        wrapper.eq(<span class="hljs-string">"title"</span>,name);
+        wrapper.eq(<span class="hljs-string">"parent_id"</span>,<span class="hljs-string">"0"</span>);
+        EduSubject one = service.getOne(wrapper);
+        <span class="hljs-keyword">return</span> one;
+    &#125;
+    <span class="hljs-comment">//判断是否有二级字段</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> EduSubject <span class="hljs-title">exisSecondField</span><span class="hljs-params">(String name,String id)</span></span>&#123;
+        QueryWrapper&lt;EduSubject&gt; wrapper  = <span class="hljs-keyword">new</span> QueryWrapper&lt;&gt;();
+        wrapper.eq(<span class="hljs-string">"title"</span>,name);
+        wrapper.eq(<span class="hljs-string">"parent_id"</span>,id);
+        EduSubject one = service.getOne(wrapper);
+        <span class="hljs-keyword">return</span> one;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ExcelListener</span><span class="hljs-params">(EduSubjectService service)</span></span>&#123;
+        <span class="hljs-keyword">this</span>.service = service;
+    &#125;
+&#125;</code></pre>
+
+
+
+<hr>
+<p><a href="https://gitee.com/xincen9/easyExcel" target="_blank" rel="noopener">实例源码地址</a></p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/blog/categories/%E5%B7%A5%E5%85%B7%E7%B1%BB/">工具类</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/blog/tags/EasyExcel/">EasyExcel</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/blog/2020/06/15/Spring/">
+                        <span class="hidden-mobile">Spring</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <div class="comments" id="comments">
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      function loadDisqus() {
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2020/06/15/EasyExcel/';
+          this.page.identifier = '/2020/06/15/EasyExcel/';
+        };
+        (function () {
+          var d = document,
+            s = d.createElement('script');
+          s.src = '//' + '' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+      }
+      createObserver(loadDisqus, 'disqus_thread');
+    </script>
+    <noscript>Please enable JavaScript to view the
+      <a href="https://disqus.com/?ref_noscript" target="_blank" rel="nofollow noopener noopener">comments powered by Disqus.</a>
+    </noscript>
+  </div>
+
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+  <!-- 备案信息 -->
+  <div class="beian">
+    <a href="http://beian.miit.gov.cn/" target="_blank"
+       rel="nofollow noopener">京ICP证123456号</a>
+    
+      <a
+        href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=12345678"
+        rel="nofollow noopener"
+        class="beian-police"
+        target="_blank"
+      >
+        <span class="beian-police-sep">&nbsp;|&nbsp;</span>
+        
+          <img src="/blog/img/police_beian.png" srcset="/blog/img/loading.gif" alt="police-icon" />
+        
+        <span>京公网安备12345678号</span>
+      </a>
+     
+  </div>
+
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/blog/js/debouncer.js" ></script>
+<script  src="/blog/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/blog/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/blog/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "EasyExcel&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/blog/js/local-search.js" ></script>
+  <script>
+    var path = "/blog/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

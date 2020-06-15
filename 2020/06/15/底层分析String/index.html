@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/blog/img/favicon.png">
+  <link rel="icon" type="image/png" href="/blog/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>底层分析String - xincen</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/blog/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/blog/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/blog/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/blog/">&nbsp;<strong>xincen</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/">
+                <i class="iconfont icon-home-fill"></i>
+                主页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                总览
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于我
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/blog/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-06-15 10:42">
+      2020年6月15日 上午
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      15
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <h1 id="String"><a href="#String" class="headerlink" title="String"></a>String</h1><blockquote>
+<p>特性</p>
+</blockquote>
+<ol>
+<li>不可变性：不可变性也就是 如果创建了一个String对象，进行改变那么就是再创建了一个对象，而不是在原有的改变。</li>
+<li>jdk8之前内部存储定义的是char类型数组</li>
+<li>jdk9以后是定义的byte类型数组存储，可以更好的节省了空间。</li>
+<li>字符串常量池在jdk1.7（含7）以后都是存储在堆空间中的。</li>
+</ol>
+<blockquote>
+<p>字符串常量池</p>
+</blockquote>
+<ol>
+<li>String pool 底层也就是HashTable </li>
+<li>所以字符串常量池是不可重复的</li>
+<li>如 String s = “abc” s2 =”abc”. 在栈中其实引用的是同一个地址（编译优化）</li>
+<li>jdk1.6以前 HashTable 长度默认值1009 ，jdk7默认为 60013， jdk8以后设置长度最低要求1009</li>
+</ol>
+<blockquote>
+<p>参数设置</p>
+</blockquote>
+<p>-XX:StringTableSize=*  </p>
+<p><code>链表短的话会影响效率</code></p>
+<blockquote>
+<p>实战</p>
+</blockquote>
+<p>可编译看字节码，一下都是基于jdk1.8以后进行说明</p>
+<p><code>声明:1.字面量创建String 那么会在字符串常量池中添加一个空间，但是堆空间不会有地址；</code></p>
+<p><code>声明:2.new 方式创建String 那么会在字符串常量池中添加一个空间，并且在堆中开辟一个空间，并且引用堆空间的地址</code></p>
+<p><code>声明:3.两个字面量拼接，那么会编译阶段就会进行编译优化如String c = &quot;a&quot;+&quot;b&quot;;编译期间会默认为String c = &quot;ab&quot;,不会再字符串常量池中分别开辟空间</code></p>
+<p><code>声明:4.在String c = new String(&quot;a&quot;)+new String(&quot;b&quot;)相加是不会在字符串常量池中开辟新的空间的，c只是引用</code></p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test</span><span class="hljs-params">()</span></span>&#123;
+        String s = <span class="hljs-string">"javaHeap"</span>;
+        String s1 = <span class="hljs-string">"java"</span>;
+        String s2 = <span class="hljs-string">"heap"</span>;
+        String s3 = s1 + s2;
+        <span class="hljs-comment">/**</span>
+<span class="hljs-comment">         * 因为编译时 s1 s2 相当于在字符串常量池中创建对象，不知道其中的值，需要引用地址</span>
+<span class="hljs-comment">         * 当赋值时，那么底层会使用 StringBuilder 的append 方法进行拼接，是引用了两个地址，进行赋值,组成新的对象,并且字符串常量池中是没有"a、javaHeap"</span>
+<span class="hljs-comment">         */</span>
+        <span class="hljs-keyword">boolean</span> result = s == s3; <span class="hljs-comment">//false</span>
+    &#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test2</span><span class="hljs-params">()</span></span>&#123;
+        String s = <span class="hljs-string">"javaHeap"</span>;
+        <span class="hljs-keyword">final</span> String s1 = <span class="hljs-string">"java"</span>;
+        <span class="hljs-keyword">final</span> String s2 = <span class="hljs-string">"heap"</span>;
+        String s3 = s1 + s2;
+        <span class="hljs-comment">/**</span>
+<span class="hljs-comment">         *  final在编译期就已经确定下来了值，在进行字符串拼接时会进行 编译优化 String s3 = "javaHeap"</span>
+<span class="hljs-comment">         */</span>
+        <span class="hljs-keyword">boolean</span> result = s == s3; <span class="hljs-comment">//true</span>
+    &#125;
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test3</span><span class="hljs-params">()</span></span>&#123;
+        String s = <span class="hljs-keyword">new</span> String(<span class="hljs-string">"javaHeap"</span>);
+        <span class="hljs-comment">/**</span>
+<span class="hljs-comment">         * 在内存中创建了5个对象 细致的说6个</span>
+<span class="hljs-comment">         * 1.new 在堆中</span>
+<span class="hljs-comment">         * 2.“字符串”在字符串常量池中</span>
+<span class="hljs-comment">         * 3. + 变量拼接 创建了StringBuilder</span>
+<span class="hljs-comment">         * 外加：StringBuilder 中的toString方法，底层也就是new String();但是不会在常量池中创建</span>
+<span class="hljs-comment">         */</span>
+        String s2 = <span class="hljs-keyword">new</span> String(<span class="hljs-string">"java"</span>) + <span class="hljs-keyword">new</span> String(<span class="hljs-string">"Heap"</span>);
+    &#125;
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test4</span><span class="hljs-params">()</span></span>&#123;
+        <span class="hljs-comment">/**</span>
+<span class="hljs-comment">         * 字面量和new 的区别</span>
+<span class="hljs-comment">         * 1. 字面量会在字符串常量池中 放入，new对象也会在常量池中放入"javaHeap"</span>
+<span class="hljs-comment">         * 2. 字面量不会在堆中开辟空间，而new会在堆中开辟空间</span>
+<span class="hljs-comment">         */</span>
+        String b = <span class="hljs-keyword">new</span> String(<span class="hljs-string">"javaHeap"</span>);<span class="hljs-comment">//返回的是堆空间中的地址</span>
+        String a = <span class="hljs-string">"javaHeap"</span>;
+        System.out.println(a==b);<span class="hljs-comment">//false</span>
+    &#125;</code></pre>
+
+
+
+<h2 id="intern方法"><a href="#intern方法" class="headerlink" title="intern方法"></a>intern方法</h2><blockquote>
+<p>简介</p>
+</blockquote>
+<p><code>Intern方法：查看字符串常量池中是否有 ， 如果有，那么返回字符串常量池中的引用，如果没有将会查看堆中是否有数据，有将会引用对象地址，没有那么创建字符串，放入常量池。</code></p>
+<blockquote>
+<p>为什么使用intern？</p>
+</blockquote>
+<p>:降低内存的大小，提高的运行的速度，会自动释放内存，会引用常量池中的数据</p>
+<blockquote>
+<p>实战详解</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test</span><span class="hljs-params">()</span></span>&#123;
+        <span class="hljs-comment">/**</span>
+<span class="hljs-comment">         *  内存结构详解：</span>
+<span class="hljs-comment">         *      new String 是在堆中创建了对象，并且在字符串常量池中创建了字面量，</span>
+<span class="hljs-comment">         *      第二行：（在创建字面量时 先查看了堆中是否有对象的引用，如果有那么就不会进行创建，之间在字符串	常量池中引用了堆中的地址【节省空间】）</span>
+<span class="hljs-comment">         *      String s = "javaHeap";</span>
+<span class="hljs-comment">         *      字面量：只会在常量池中 创建常量。</span>
+<span class="hljs-comment">         *</span>
+<span class="hljs-comment">         *      所以在比较时 new 在常量池是对象引用地址，而字面量是值（或者说地址）所以false</span>
+<span class="hljs-comment">         */</span>
+        String s2 = <span class="hljs-keyword">new</span> String(<span class="hljs-string">"javaHeap"</span>);
+        s2.intern();
+        String s = <span class="hljs-string">"javaHeap"</span>;
+        System.out.println(s==s2);<span class="hljs-comment">//false</span>
+    &#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test2</span><span class="hljs-params">()</span></span>&#123;
+        <span class="hljs-comment">/**</span>
+<span class="hljs-comment">         *  内存结构详解：</span>
+<span class="hljs-comment">         *      这里在进行第一行代码时 结构（创建了6个对象，最后在堆中生成了对象s ="javaHeap" 变量池中没有生成）</span>
+<span class="hljs-comment">         *        第二行：在变量池中生成</span>
+<span class="hljs-comment">         *        第三行：直接引用变量池</span>
+<span class="hljs-comment">         *</span>
+<span class="hljs-comment">         */</span>
+        String s = <span class="hljs-keyword">new</span> String(<span class="hljs-string">"java"</span>) + <span class="hljs-keyword">new</span> String(<span class="hljs-string">"Heap"</span>);
+        s.intern();
+        String s2 = <span class="hljs-string">"javaHeap"</span>;
+        System.out.println(s==s2);<span class="hljs-comment">//true</span>
+    &#125;
+<span class="hljs-comment">//-------------------------------------------------------------------------------------------------</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        String str2 = <span class="hljs-keyword">new</span> String(<span class="hljs-string">"xin"</span>) + <span class="hljs-keyword">new</span> String(<span class="hljs-string">"cen"</span>);
+        <span class="hljs-comment">//String str2 = new String("a");</span>
+        String intern = str2.intern();
+        String str = <span class="hljs-string">"xincen"</span>;
+        System.out.println(intern==str);<span class="hljs-comment">//true 比较串常量池中的地址</span>
+        System.out.println(str2==str);<span class="hljs-comment">//false 比较了堆中的地址</span>
+    &#125;</code></pre>
+
+
+
+
+
+<h2 id="面试点提问-源码"><a href="#面试点提问-源码" class="headerlink" title="面试点提问+源码"></a>面试点提问+源码</h2><blockquote>
+<p>问如果在字符串拼接的时候一定是用的StringBuilder么？</p>
+</blockquote>
+<p>答：不是 因为final 修饰的不是</p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/blog/categories/Basics/">Basics</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/blog/tags/String/">String</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/blog/2020/06/15/Maven-%E7%83%AD%E9%83%A8%E7%BD%B2-tomcat-%E9%A1%B5%E9%9D%A2%E5%87%BA%E7%8E%B0403%E9%94%99%E8%AF%AF/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Maven 热部署 tomcat 页面出现403错误</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/blog/2020/06/15/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3JVM/">
+                        <span class="hidden-mobile">深入理解JVM</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <div class="comments" id="comments">
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      function loadDisqus() {
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2020/06/15/底层分析String/';
+          this.page.identifier = '/2020/06/15/底层分析String/';
+        };
+        (function () {
+          var d = document,
+            s = d.createElement('script');
+          s.src = '//' + '' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+      }
+      createObserver(loadDisqus, 'disqus_thread');
+    </script>
+    <noscript>Please enable JavaScript to view the
+      <a href="https://disqus.com/?ref_noscript" target="_blank" rel="nofollow noopener noopener">comments powered by Disqus.</a>
+    </noscript>
+  </div>
+
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+  <!-- 备案信息 -->
+  <div class="beian">
+    <a href="http://beian.miit.gov.cn/" target="_blank"
+       rel="nofollow noopener">京ICP证123456号</a>
+    
+      <a
+        href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=12345678"
+        rel="nofollow noopener"
+        class="beian-police"
+        target="_blank"
+      >
+        <span class="beian-police-sep">&nbsp;|&nbsp;</span>
+        
+          <img src="/blog/img/police_beian.png" srcset="/blog/img/loading.gif" alt="police-icon" />
+        
+        <span>京公网安备12345678号</span>
+      </a>
+     
+  </div>
+
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/blog/js/debouncer.js" ></script>
+<script  src="/blog/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/blog/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/blog/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "底层分析String&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/blog/js/local-search.js" ></script>
+  <script>
+    var path = "/blog/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
