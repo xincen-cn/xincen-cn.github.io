@@ -29,31 +29,6 @@
   
   
   <entry>
-    <title>Spring</title>
-    <link href="/blog/2020/06/15/Spring/"/>
-    <url>/blog/2020/06/15/Spring/</url>
-    
-    <content type="html"><![CDATA[<h1 id="Spring"><a href="#Spring" class="headerlink" title="Spring"></a>Spring</h1><h2 id="Spring中常用注释"><a href="#Spring中常用注释" class="headerlink" title="Spring中常用注释"></a>Spring中常用注释</h2><ol><li><p>@Component 创建类对象,相当于配置<bean></bean></p></li><li><p>@Service 与@Component 功能相同.<br>2.1 写在ServiceImpl 类上.</p></li><li><p>@Repository 与@Component 功能相同.<br>3.1 写在数据访问层类上.</p></li><li><p>@Controller 与@Component 功能相同.<br>4.1 写在控制器类上.</p></li><li><p>@Resource(不需要写对象的get/set)  （JDK提供）<br> 5.1 java 中的注解<br> 5.2 默认按照byName 注入,如果没有名称对象,按照byType 注入<br> 5.2.1 建议把对象名称和spring 容器中对象名相同</p></li><li><p>@Autowired(不需要写对象的get/set)  （Spring提供）<br>6.1 spring 的注解<br>6.2 默认按照byType 注入.</p></li><li><p>@Qualifier(“restHighLevelClient”)</p><ol><li><p>指定bean默认的id</p></li><li><pre><code class="java">       <span class="meta">@Autowired</span>      <span class="meta">@Qualifier</span>(<span class="string">"restHighLevelClient"</span>)<span class="comment">//默认id</span>      <span class="keyword">private</span> RestHighLevelClient clent;&lt;!--￼<span class="number">0</span>--&gt;<span class="meta">@Value</span>(<span class="string">"${ftpclient.host}"</span>) <span class="comment">//示例代碼</span>      <span class="keyword">private</span> String host;&lt;!--￼<span class="number">1</span>--&gt;&lt;!--全局配置文件加载 --&gt;&lt;context-param&gt;    &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;    &lt;param-value&gt;classpath:applicationContext.xml&lt;/param-value&gt;&lt;/context-param&gt;</code></pre></li></ol></li></ol><!-- 监听器 基于监听器ContextLoaderListener类中的构造方法进行初始化加载 --><listener>    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class></listener><pre><code class="hljs">## 一、IOC/DI  控制反转/依赖注入##### 1 IOC 控制反转​1.1 ioc：原有由程序员通过new 实例化对象的事请交给spring来做​1.2 ioc最大最用：解耦 程序员不需要管理对象.解除了对象管理和程序员之间的耦合..解除了对象管理和程序员之间的耦合.##### 2  DI 依赖注入​2.1  DI和IOC是一样的​2.2  当一个类中的属性需要依赖于另一个类，将另一个类引入到属性中的过程就叫做依赖注入！## 二、AOP​1  AOP：面向切面编程  ​2  介绍：正常程序运行是纵向 ，aop则为 横向运行​2.1  分为 schema-based方式实现​2.2  Aspectj方式实现​3  特点：不需要修改原有代码​3.2  高扩展性​3.3  职责更明确​&lt;u&gt;4  使用AOP 推荐加入cglib动态代理&lt;/u&gt;</code></pre><!-- 使用代理方式  true代表使用cjlib动态代理，false使用jdk动态代理  --><pre><code>&lt;aop:aspectj-autoproxy proxy-target-class=&quot;true&quot;&gt;&lt;/aop:aspectj-autoproxy&gt;</code></pre><pre><code class="hljs">##### schema-based 实现方式</code></pre><pre><code>&lt;bean class=&quot;com.sxt.advice.BeforeAdvice&quot; id=&quot;beforeadvice&quot;&gt;&lt;/bean&gt; &lt;bean class=&quot;com.sxt.advice.AfterAdvicet&quot; id=&quot;afteradvice&quot;&gt;&lt;/bean&gt;   &lt;!-- Schema-based 方式配置aop 面向切面 --&gt;   &lt;aop:config&gt;   &lt;!-- 声明切点 expression:固定表达式 .*() 代表所有无参方法 .(..)代表所有有参无参方法--&gt;   &lt;aop:pointcut id=&quot;mypointcut&quot; expression=&quot;execution(* com.sxt.demo.Demo.*(..))&quot;/&gt;   &lt;!-- 声明引入前置类 --&gt;   &lt;aop:advisor advice-ref=&quot;beforeadvice&quot; pointcut-ref=&quot;mypointcut&quot;/&gt;   &lt;!-- 声明引入后置类 --&gt;   &lt;aop:advisor advice-ref=&quot;afteradvice&quot; pointcut-ref=&quot;mypointcut&quot;/&gt;   &lt;/aop:config&gt;   &lt;!-- 配置测试类 --&gt;     &lt;bean class=&quot;com.sxt.demo.Demo&quot; id=&quot;demo&quot;&gt;&lt;/bean&gt;</code></pre><pre><code class="hljs clean">##### Aspectj实现方式</code></pre><p><bean class="com.sxt.advice.MyAdvice" id="advice"></bean><br>    <!-- Aspectj方式实现 --><br>    <a href="aop:config">aop:config</a><br>    <!-- ref：声明切面类 --><br>    &lt;aop:aspect ref=”advice”&gt;<br>    &lt;aop:pointcut expression=”execution(* com.sxt.demo.Demo.*())” id=”point”/&gt;<br>    <!-- 声明前置切面 method：引入前置切面方法 pointcut:引入切点 --><br>    &lt;aop:before method=”beforAdvice” pointcut-ref=”point”  /&gt;<br>    <!-- 声明后置切面 after-throwing 和 after 区别 第一个有错误就会停止，第二个有错误也会运行下去  --><br>    &lt;aop:after method=”afterAdvice” pointcut-ref=”point”/&gt;<br>    <!-- 声明异常切面 throwing:异常变量 --><br>     &lt;aop:after-throwing method=”throwsAdvice” throwing=”e” pointcut-ref=”point” /&gt;<br>    <br>    <br>    <bean class="com.sxt.demo.Demo" id="demo"></bean></p><pre><code class="hljs clean">##### 使用注解方式（基于Aspect）​<span class="hljs-number">1</span>  需要添加jar包​​<span class="hljs-number">2</span>  引入 xmlns：context</code></pre><p><beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context" xsi:schemalocation="http://www.springframework.org/schema/beans      http://www.springframework.org/schema/beans/spring-beans.xsd      http://www.springframework.org/schema/aop      http://www.springframework.org/schema/aop/spring-aop.xsd      http://www.springframework.org/schema/context      http://www.springframework.org/schema/context/spring-context.xsd "></beans></p><pre><code>&lt;!-- 告诉spring 哪些包下有注解 --&gt;&lt;context:component-scan base-package=&quot;com.sxt.advice,com.sxt.demo&quot;&gt;&lt;/context:component-scan&gt;&lt;!-- 使用代理方式  true代表使用cjlib动态代理，false使用jdk动态代理  --&gt;&lt;aop:aspectj-autoproxy proxy-target-class=&quot;true&quot;&gt;&lt;/aop:aspectj-autoproxy&gt;</code></pre><pre><code class="hljs clean">​<span class="hljs-number">3</span>  使用注解：​<span class="hljs-number">3.1</span>  @Component(<span class="hljs-string">"id"</span>)相当于 &lt;bean/&gt;​<span class="hljs-number">3.2</span>  @Aspect  相当于 &lt;aop:aspect/&gt; 表示通知方法在当前类中​<span class="hljs-number">3.3</span>  @Before(<span class="hljs-string">" 切点"</span>) ## 三、事务管理##### <span class="hljs-number">1</span> 自动注入​在&lt;beans &gt; 属性中添加</code></pre><beans default-autowire="byName">        <!--  default-autowire="byName" 设置注入方法默认为 通过名称 相同名称将自动注入 --><pre><code class="hljs clean">##### <span class="hljs-number">2</span>  Spring加载.properties文件属性​<span class="hljs-number">2.1</span>使用 $&#123; key&#125;  来获取文件属性中的 value值​<span class="hljs-number">2.2</span> xml中引入</code></pre><!-- 声明引入文件文件配置 -->        <context:property-placeholder location="classpath:jdbc.properties"><pre><code class="hljs clean">##### <span class="hljs-number">3</span> 配置事务管理​基于 &lt;xmlns:tx&gt;</code></pre> <!-- 声明事务 -->       <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="txManager">           <property name="dataSource" ref="dataSource"></property>       </bean>       <!-- 配置事务声明 -->       <tx:advice id="txAdvice" transaction-manager="txManager">               <tx:attributes>            <!-- 声明那些方法需要事务管理 -->             <!-- 声明方法名前缀 inser需要管理 -->               <tx:method name="inser*">                        </tx:method></tx:attributes>       </tx:advice>         <!-- aop -->       <!-- 声明代理方式 cjlib -->       <aop:aspectj-autoproxy proxy-target-class="true"></aop:aspectj-autoproxy>       <aop:config>        <!-- 设置事务切点 切点范围可以设置大一些-->       <aop:pointcut expression="execution(* com.sxt.service.impl.PeopleServiceImpl.*(..))" id="point">       <aop:advisor advice-ref="txAdvice" pointcut-ref="point">       </aop:advisor></aop:pointcut></aop:config>```<h3 id="事务的传播行为"><a href="#事务的传播行为" class="headerlink" title="事务的传播行为"></a>事务的传播行为</h3><blockquote><p>Propagation.REQUIRED</p></blockquote><p>默认的的事务行为，只要加了@Transactional就可以，使用原来的事务</p><p>原子性：一个不成功就都不成功</p><blockquote><p>Propagation.REQUIRES_NEW</p></blockquote><p>将原来的事务挂起，使用新的事务。</p><p>如：买书 调用了另一个方法开通的事务，其中有一个会成功</p><h3 id="数据库事务并发问题"><a href="#数据库事务并发问题" class="headerlink" title="数据库事务并发问题"></a>数据库事务并发问题</h3><blockquote><p>脏读</p></blockquote><p>什么是脏读，有一个用户读到了，数据库修改了但是事务还没有提交的数据</p><blockquote><p>不可重复读</p></blockquote><p>就是一个用户修改了数据库中的数据并且提交了，但是另一个人读到的数据还是没有修改前的数据</p><blockquote><p>幻读</p></blockquote><p>一个用户第一次读了2行数据，中间有人插入了一条数据，当用户第二次进行读取发现出现了3行，这就出现了幻读</p><blockquote><p>隔离级别</p></blockquote><p>isolation=Isolation.</p></context:property-placeholder></beans>]]></content>
-    
-    
-    <categories>
-      
-      <category>SSM</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>Spring</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>Linux</title>
     <link href="/blog/2020/06/15/Linux/"/>
     <url>/blog/2020/06/15/Linux/</url>
@@ -171,25 +146,6 @@
     <tags>
       
       <tag>docker</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title>Maven 热部署 tomcat 页面出现403错误</title>
-    <link href="/blog/2020/06/15/Maven-%E7%83%AD%E9%83%A8%E7%BD%B2-tomcat-%E9%A1%B5%E9%9D%A2%E5%87%BA%E7%8E%B0403%E9%94%99%E8%AF%AF/"/>
-    <url>/blog/2020/06/15/Maven-%E7%83%AD%E9%83%A8%E7%BD%B2-tomcat-%E9%A1%B5%E9%9D%A2%E5%87%BA%E7%8E%B0403%E9%94%99%E8%AF%AF/</url>
-    
-    <content type="html"><![CDATA[<p><img src="https://img-blog.csdnimg.cn/20200221111442160.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpbmNlbjk=,size_16,color_FFFFFF,t_70" srcset="/blog/img/loading.gif" alt="在这里插入图片描述"></p><h4 id="解决："><a href="#解决：" class="headerlink" title="解决："></a>解决：</h4><pre><code>1. 进入tomcat目录下2. vim webapps/manager/META-INF/context.xml3. 找到如下代码并注释：&lt;Valve className=&quot;org.apache.catalina.valves.RemoteAddrValve&quot; allow=&quot;127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1&quot; /&gt; </code></pre><p>重新访问就可以了。   </p>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>Maven</tag>
       
     </tags>
     
